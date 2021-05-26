@@ -4,8 +4,104 @@ This dataset contains synthetic training data for grammatical error correction d
 
 ## Generating the dataset
 
+The following instructions have been tested in an
+[Anaconda](https://www.anaconda.com/) (version Anaconda3 2021.05) Python
+environment, but are expected to work in other Python 3 setups, too.
+
+### Install the dependencies
+
+Install the TensorFlow Datasets and Abseil Python packages with PIP:
+
+```
+pip install tensorflow-datasets absl-py
+```
+
+### Setup C4 in TensorFlow Datasets
+
+Obtain the **C4 corpus version 2.2.1** by following [these instructions](https://www.tensorflow.org/datasets/catalog/c4).
+
+### Download the C4\_200M corruptions
+
+Change to a new working directory and download the C4\_200M corruptions from
+[https://storage.cloud.google.com/TODO](https://storage.cloud.google.com/TODO):
+
+```
+wget https://storage.cloud.google.com/TODO
+```
+
+Extract the archive:
+
+```
+tar xzf  edits.tsv.tar.gz
+```
+
+The edits are split into 10 shards and stored as tab-separated values:
+
+```
+head edits.tsv-00000-of-00010
+
+00000002020d286371dd59a2f8a900e6	8	13	is
+00000002020d286371dd59a2f8a900e6	38	60	which CoinDesk says.
+00000069b517cf07c79124fae6ebd0d8	0	3
+00000069b517cf07c79124fae6ebd0d8	17	34	widespread dud
+0000006dce3b7c10a6ad25736c173506	0	14
+0000006dce3b7c10a6ad25736c173506	21	30	sales
+0000006dce3b7c10a6ad25736c173506	33	44	stores
+0000006dce3b7c10a6ad25736c173506	48	65	non residents are
+0000006dce3b7c10a6ad25736c173506	112	120	sales tentatively
+0000006dce3b7c10a6ad25736c173506	127	130	from
+```
+
+The first column is an MD5 hash that identifies a sentence in the C4 corpus. The
+second and third columns are byte start and end positions, and the third column
+contains the replacement text.
+
+
+### Extract C4\_200M target sentences from C4
+
+C4\_200M uses only a relatively small subset of C4 (200M sentences). The `c4200m_get_target_sentences.py` script fetches the clean target sentences from C4 for a single shard:
+
+```
+python c4200m_get_target_sentences.py edits.tsv-00000-of-00010 target_sentences.tsv-00000-of-00010 &> get_target_sentences.log-00000-of-00010
+```
+
+The mapping from the MD5 hash to the target sentence is written to
+`target_sentences.tsv*`:
+
+```
+$ head -n 3 target_sentences.tsv-00000-of-00010
+
+00000002020d286371dd59a2f8a900e6	Bitcoin goes for $7,094 this morning, according to CoinDesk.
+00000069b517cf07c79124fae6ebd0d8	1. The effect of "widespread dud" targets two face up attack position monsters on the field.
+0000006dce3b7c10a6ad25736c173506	Capital Gains tax on the sale of properties for non-residents is set at 21% for 2014 and 20% in 2015 payable on profits earned on the difference of the property value between the year of purchase (purchase price plus costs) and the year of sale (sales price minus costs), based on the approved annual percentage increase on the base value approved by law.
+```
+
+Repeat for the remaining nine shards, optionally with trailing ampersand for parallel
+processing.
+
+### Apply corruption edits
+
+To generate the final parallel dataset the edits in `edit.tsv*` have to be
+applied to the sentences in `target_sentences.tsv*`:
+
+```
+python c4200m_make_sentence_pairs.py target_sentences.tsv-00000-of-00010 edits.tsv-00000-of-00010 sentence_pairs.tsv-00000-of-00010
+```
+
+The parallel data is written to `sentence_pairs.tsv*`:
+
+```
+$ head -n 3 sentence_pairs.tsv-00000-of-00010
+
+Bitcoin is for $7,094 this morning, which CoinDesk says.	Bitcoin goes for $7,094 this morning, according to CoinDesk.
+The effect of widespread dud targets two face up attack position monsters on the field.	1. The effect of "widespread dud" targets two face up attack position monsters on the field.
+tax on sales of stores for non residents are set at 21% for 2014 and 20% in 2015 payable on sales tentatively earned from the difference of the property value some time of purchase (price differences according to working time) and theyear to which sale couples (sales costs), based on the approved annual on the base approved by law).	Capital Gains tax on the sale of properties for non-residents is set at 21% for 2014 and 20% in 2015 payable on profits earned on the difference of the property value between the year of purchase (purchase price plus costs) and the year of sale (sales price minus costs), based on the approved annual percentage increase on the base value approved by law.
+```
+
+Again, repeat for the remaining nine shards.
+
 ## License
-The corruption edits in this dataset are licensed under [CC BY 4.0]https://creativecommons.org/licenses/by/4.0/). (TODO: Is that correct?)
+The corruption edits in this dataset are licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). (TODO: Is that correct?)
 
 
 ## BibTeX
