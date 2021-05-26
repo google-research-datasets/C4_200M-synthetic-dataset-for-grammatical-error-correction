@@ -1,6 +1,6 @@
 # C4\_200M Synthetic Dataset for Grammatical Error Correction
 
-This dataset contains synthetic training data for grammatical error correction described in [our BEA 2021 paper](https://www.aclweb.org/anthology/2021.bea-1.4/). Only the corruption edits are published here. To generate the parallel training data you will need to obtain the [C4 corpus](https://www.tensorflow.org/datasets/catalog/c4) and apply the edits by following the instructions below.
+This dataset contains synthetic training data for grammatical error correction and is described in [our BEA 2021 paper](https://www.aclweb.org/anthology/2021.bea-1.4/). To generate the parallel training data you will need to obtain the [C4 corpus](https://www.tensorflow.org/datasets/catalog/c4) first and apply the edits that are published here by following the instructions below.
 
 ## Generating the dataset
 
@@ -23,22 +23,12 @@ Obtain the **C4 corpus version 2.2.1** by following [these instructions](https:/
 ### Download the C4\_200M corruptions
 
 Change to a new working directory and download the C4\_200M corruptions from
-[https://storage.cloud.google.com/TODO](https://storage.cloud.google.com/TODO):
-
-```
-wget https://storage.cloud.google.com/TODO
-```
-
-Extract the archive:
-
-```
-tar xzf  edits.tsv.tar.gz
-```
+[Kaggle Datasets](https://www.kaggle.com/felixstahlberg/the-c4-200m-dataset-for-gec):
 
 The edits are split into 10 shards and stored as tab-separated values:
 
 ```
-head edits.tsv-00000-of-00010
+$ head edits.tsv-00000-of-00010
 
 00000002020d286371dd59a2f8a900e6	8	13	is
 00000002020d286371dd59a2f8a900e6	38	60	which CoinDesk says.
@@ -59,7 +49,7 @@ contains the replacement text.
 
 ### Extract C4\_200M target sentences from C4
 
-C4\_200M uses only a relatively small subset of C4 (200M sentences). The `c4200m_get_target_sentences.py` script fetches the clean target sentences from C4 for a single shard:
+C4\_200M uses a relatively small subset of C4 (200M sentences). The `c4200m_get_target_sentences.py` script fetches the clean target sentences from C4 for a single shard:
 
 ```
 python c4200m_get_target_sentences.py edits.tsv-00000-of-00010 target_sentences.tsv-00000-of-00010 &> get_target_sentences.log-00000-of-00010
@@ -101,7 +91,7 @@ tax on sales of stores for non residents are set at 21% for 2014 and 20% in 2015
 Again, repeat for the remaining nine shards.
 
 ## License
-The corruption edits in this dataset are licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). (TODO: Is that correct?)
+The corruption edits in this dataset are licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
 
 
 ## BibTeX
