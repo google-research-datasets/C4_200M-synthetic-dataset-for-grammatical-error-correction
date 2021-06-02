@@ -43,7 +43,7 @@ $ head edits.tsv-00000-of-00010
 ```
 
 The first column is an MD5 hash that identifies a sentence in the C4 corpus. The
-second and third columns are byte start and end positions, and the third column
+second and third columns are byte start and end positions, and the fourth column
 contains the replacement text.
 
 
