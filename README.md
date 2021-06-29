@@ -18,7 +18,7 @@ pip install tensorflow-datasets absl-py
 
 ### Setup C4 in TensorFlow Datasets
 
-Obtain the **C4 corpus version 2.2.1** by following [these instructions](https://www.tensorflow.org/datasets/catalog/c4).
+Obtain the **C4 corpus version 2.2.1** by following [these instructions](https://www.tensorflow.org/datasets/catalog/c4). More recent versions such as version 3.0.1 provided by [allenai](https://github.com/allenai/allennlp/discussions/5056) may also [work](https://github.com/google-research-datasets/C4_200M-synthetic-dataset-for-grammatical-error-correction/issues/2).
 
 ### Download the C4\_200M corruptions
 
