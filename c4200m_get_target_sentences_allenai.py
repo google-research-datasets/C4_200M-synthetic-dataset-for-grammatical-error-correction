@@ -38,7 +38,7 @@ def main(argv):
     target_sentences = []
     num_tot_examples = 0
     for file_json in os.listdir(dataset_dir):
-        if not file_json.endswith('.json.gz') and 'train' in file_json:
+        if not (file_json.endswith('.json.gz') and 'train' in file_json):
             continue
         dataset_file = os.path.join(dataset_dir, file_json)
         with gzip.open(dataset_file, 'r') as f_in:
