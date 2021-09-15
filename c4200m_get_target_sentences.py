@@ -40,9 +40,8 @@ def main(argv):
         (len(target_sentences), len(remaining_hashes)))
   print("Writing C4_200M sentence pairs to %r..." % output_tsv_path)
   with open(output_tsv_path, "w") as output_tsv_writer:
-    with open(edits_tsv_path) as edits_tsv_reader:
-      while target_sentences:
-        output_tsv_writer.write("%s\t%s\n" % heapq.heappop(target_sentences))
+    while target_sentences:
+      output_tsv_writer.write("%s\t%s\n" % heapq.heappop(target_sentences))
 
 
 if __name__ == "__main__":
