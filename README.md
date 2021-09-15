@@ -16,9 +16,11 @@ Install the TensorFlow Datasets and Abseil Python packages with PIP:
 pip install tensorflow-datasets absl-py
 ```
 
+**Note:** the TensorFlow Datasets package is not required when using the C4 dataset in compressed json format.
+
 ### Setup C4 in TensorFlow Datasets
 
-Obtain the **C4 corpus version 2.2.1** by following [these instructions](https://www.tensorflow.org/datasets/catalog/c4). More recent versions such as version 3.0.1 provided by [allenai](https://github.com/allenai/allennlp/discussions/5056) may also [work](https://github.com/google-research-datasets/C4_200M-synthetic-dataset-for-grammatical-error-correction/issues/2).
+Obtain the **C4 corpus version 2.2.1** by following [these instructions](https://www.tensorflow.org/datasets/catalog/c4). It may be possible to use more recent versions such as version 3.0.1 provided by [allenai](https://github.com/allenai/allennlp/discussions/5056), obtaining most of the [edited sentences](https://github.com/google-research-datasets/C4_200M-synthetic-dataset-for-grammatical-error-correction/issues/2).
 
 ### Download the C4\_200M corruptions
 
@@ -68,6 +70,16 @@ $ head -n 3 target_sentences.tsv-00000-of-00010
 
 Repeat for the remaining nine shards, optionally with trailing ampersand for parallel
 processing.
+
+#### Dataset in .json.gz Format
+
+Given a folder containing the C4 dataset compressed in `.json.gz` files, it is possible to fetch the clean target sentences as follows:
+
+```
+python c4200m_get_target_sentences_json.py edits.tsv-00000-of-00010 /C4/en/target_sentences.tsv-00000-of-00010 &> get_target_sentences.log-00000-of-00010
+```
+
+where we assume the training examples of the C4 dataset are located in `/C4/en/*train*.json.gz`.
 
 ### Apply corruption edits
 
