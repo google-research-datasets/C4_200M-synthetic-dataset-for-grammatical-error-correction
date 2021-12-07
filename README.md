@@ -69,6 +69,15 @@ $ head -n 3 target_sentences.tsv-00000-of-00010
 Repeat for the remaining nine shards, optionally with trailing ampersand for parallel
 processing.
 
+You can also run the concurrent script with the `concurrent-runs` parameter 
+to check multiple shards at the same time.
+
+```
+python c4200m_get_target_sentences_concurrent.py edits.tsv-00000-of-00010 target_sentences.tsv-00000-of-00010 5 &> get_target_sentences.log-00000-of-00010
+```
+
+The above reads 5 shards (00000 to 00004) at once and saves the target sentences to their corresponding files.
+
 ### Apply corruption edits
 
 To generate the final parallel dataset the edits in `edit.tsv*` have to be
