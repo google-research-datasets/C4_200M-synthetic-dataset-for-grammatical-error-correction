@@ -10,17 +10,11 @@ environment, but are expected to work in other Python 3 setups, too.
 
 ### Install the dependencies
 
-Install the TensorFlow Datasets and Abseil Python packages with PIP:
+Install the Abseil Python package with PIP:
 
 ```
-pip install tensorflow-datasets absl-py
+pip install absl-py
 ```
-
-**Note:** the TensorFlow Datasets package is not required when using the C4 dataset in compressed json format.
-
-### Setup C4 in TensorFlow Datasets
-
-Obtain the **C4 corpus version 2.2.1** by following [these instructions](https://www.tensorflow.org/datasets/catalog/c4). It may be possible to use more recent versions such as version 3.0.1 provided by [allenai](https://github.com/allenai/allennlp/discussions/5056), obtaining most of the [edited sentences](https://github.com/google-research-datasets/C4_200M-synthetic-dataset-for-grammatical-error-correction/issues/2).
 
 ### Download the C4\_200M corruptions
 
@@ -51,11 +45,48 @@ contains the replacement text.
 
 ### Extract C4\_200M target sentences from C4
 
-C4\_200M uses a relatively small subset of C4 (200M sentences). The `c4200m_get_target_sentences.py` script fetches the clean target sentences from C4 for a single shard:
+C4\_200M uses a relatively small subset of C4 (200M sentences). There are two ways to obtain the C4\_200M target sentences: using TensorFlow Datasets or using the C4 version provided by [allenai](https://github.com/allenai/allennlp/discussions/5056).
+
+#### Using TensorFlow Datasets
+
+Install the TensorFlow Datasets Python package with PIP:
+
+```
+pip install tensorflow-datasets
+```
+
+Obtain the **C4 corpus version 2.2.1** by following [these instructions](https://www.tensorflow.org/datasets/catalog/c4). The `c4200m_get_target_sentences.py` script fetches the clean target sentences from C4 for a single shard:
 
 ```
 python c4200m_get_target_sentences.py edits.tsv-00000-of-00010 target_sentences.tsv-00000-of-00010 &> get_target_sentences.log-00000-of-00010
 ```
+
+
+Repeat for the remaining nine shards, optionally with trailing ampersand for parallel processing. You can also run the concurrent script with the `concurrent-runs` parameter 
+to check multiple shards at the same time.
+
+```
+python c4200m_get_target_sentences_concurrent.py edits.tsv-00000-of-00010 target_sentences.tsv-00000-of-00010 5 &> get_target_sentences.log-00000-of-00010
+```
+
+The above reads 5 shards (00000 to 00004) at once and saves the target sentences to their corresponding files.
+
+
+#### Using the C4 Dataset in .json.gz Format
+
+Given a folder containing the C4 dataset compressed in `.json.gz` files as provided by [allenai](https://github.com/allenai/allennlp/discussions/5056), it is possible to fetch the clean target sentences as follows:
+
+```
+python c4200m_get_target_sentences_json.py edits.tsv-00000-of-00010 /C4/en/target_sentences.tsv-00000-of-00010 &> get_target_sentences.log-00000-of-00010
+```
+
+where we assume the training examples of the C4 dataset are located in `/C4/en/*train*.json.gz`.
+
+Repeat for the remaining nine shards, optionally with trailing ampersand for parallel processing.
+
+
+
+### Apply corruption edits
 
 The mapping from the MD5 hash to the target sentence is written to
 `target_sentences.tsv*`:
@@ -67,21 +98,6 @@ $ head -n 3 target_sentences.tsv-00000-of-00010
 00000069b517cf07c79124fae6ebd0d8	1. The effect of "widespread dud" targets two face up attack position monsters on the field.
 0000006dce3b7c10a6ad25736c173506	Capital Gains tax on the sale of properties for non-residents is set at 21% for 2014 and 20% in 2015 payable on profits earned on the difference of the property value between the year of purchase (purchase price plus costs) and the year of sale (sales price minus costs), based on the approved annual percentage increase on the base value approved by law.
 ```
-
-Repeat for the remaining nine shards, optionally with trailing ampersand for parallel
-processing.
-
-#### Dataset in .json.gz Format
-
-Given a folder containing the C4 dataset compressed in `.json.gz` files, it is possible to fetch the clean target sentences as follows:
-
-```
-python c4200m_get_target_sentences_json.py edits.tsv-00000-of-00010 /C4/en/target_sentences.tsv-00000-of-00010 &> get_target_sentences.log-00000-of-00010
-```
-
-where we assume the training examples of the C4 dataset are located in `/C4/en/*train*.json.gz`.
-
-### Apply corruption edits
 
 To generate the final parallel dataset the edits in `edit.tsv*` have to be
 applied to the sentences in `target_sentences.tsv*`:
