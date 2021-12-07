@@ -8,7 +8,7 @@ The following instructions have been tested in an
 [Anaconda](https://www.anaconda.com/) (version Anaconda3 2021.05) Python
 environment, but are expected to work in other Python 3 setups, too.
 
-### Install the dependencies
+### 1.) Install the dependencies
 
 Install the Abseil Python package with PIP:
 
@@ -16,7 +16,7 @@ Install the Abseil Python package with PIP:
 pip install absl-py
 ```
 
-### Download the C4\_200M corruptions
+### 2.) Download the C4\_200M corruptions
 
 Change to a new working directory and download the C4\_200M corruptions from
 [Kaggle Datasets](https://www.kaggle.com/felixstahlberg/the-c4-200m-dataset-for-gec):
@@ -43,7 +43,7 @@ second and third columns are byte start and end positions, and the fourth column
 contains the replacement text.
 
 
-### Extract C4\_200M target sentences from C4
+### 3.) Extract C4\_200M target sentences from C4
 
 C4\_200M uses a relatively small subset of C4 (200M sentences). There are two ways to obtain the C4\_200M target sentences: using TensorFlow Datasets or using the C4 version provided by [allenai](https://github.com/allenai/allennlp/discussions/5056).
 
@@ -74,7 +74,7 @@ The above reads 5 shards (00000 to 00004) at once and saves the target sentences
 
 #### Using the C4 Dataset in .json.gz Format
 
-Given a folder containing the C4 dataset compressed in `.json.gz` files as provided by [allenai](https://github.com/allenai/allennlp/discussions/5056), it is possible to fetch the clean target sentences as follows:
+Given a folder containing the C4 dataset compressed in `.json.gz` files as provided by [allenai](https://github.com/allenai/allennlp/discussions/5056), it is possible to fetch [most of the clean target sentences](https://github.com/google-research-datasets/C4_200M-synthetic-dataset-for-grammatical-error-correction/issues/2) as follows:
 
 ```
 python c4200m_get_target_sentences_json.py edits.tsv-00000-of-00010 /C4/en/target_sentences.tsv-00000-of-00010 &> get_target_sentences.log-00000-of-00010
@@ -86,7 +86,7 @@ Repeat for the remaining nine shards, optionally with trailing ampersand for par
 
 
 
-### Apply corruption edits
+### 4.) Apply corruption edits
 
 The mapping from the MD5 hash to the target sentence is written to
 `target_sentences.tsv*`:
