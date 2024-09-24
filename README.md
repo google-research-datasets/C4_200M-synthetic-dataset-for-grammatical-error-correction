@@ -118,12 +118,33 @@ tax on sales of stores for non residents are set at 21% for 2014 and 20% in 2015
 
 Again, repeat for the remaining nine shards.
 
+## Multilingual C4\_200M
+
+In our [BEA 2024 paper](https://aclanthology.org/2024.bea-1.2/) we introduced variants of our original English dataset in German, Spanish, Romanian, and Russian. The multilingual datasets are generated with the same recipe, but you need to provide the language ID to `c4200m_get_target_sentences.py`:
+
+```
+python c4200m_get_target_sentences.py multilingual/ro.tsv ro.target_sentences.tsv ro &> ro.get_target_sentences.log
+
+```
+
+The entry point to the multilingual annotation toolkit is `annotate.py`:
+
+```
+$ echo -e "I goed to the storr.\tI went to the store." | python3 -m merrant.annotate
+
+S I goed to the storr.
+A 2 6|||R:VERB:INFL|||went|||REQUIRED|||-NONE-|||0
+A 14 19|||R:SPELL|||store|||REQUIRED|||-NONE-|||0
+```
+
 ## License
 The corruption edits in this dataset are licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
 
 
 ## BibTeX
-If you found this dataset useful, please cite our [paper](https://www.aclweb.org/anthology/2021.bea-1.4/).
+If you found this dataset useful, please cite our papers:
+
+Original English dataset ([BEA 2021 paper](https://www.aclweb.org/anthology/2021.bea-1.4/)):
 
 ```
 @inproceedings{stahlberg-kumar-2021-synthetic,
@@ -136,6 +157,23 @@ If you found this dataset useful, please cite our [paper](https://www.aclweb.org
     publisher = "Association for Computational Linguistics",
     url = "https://www.aclweb.org/anthology/2021.bea-1.4",
     pages = "37--47",
+}
+```
+
+Multilingual dataset in German, Spanish, Romanian, and Russian ([BEA 2024 paper](https://aclanthology.org/2024.bea-1.2/)):
+
+```
+@inproceedings{stahlberg-kumar-2024-synthetic,
+    title = "Synthetic Data Generation for Low-resource Grammatical Error Correction with Tagged Corruption Models",
+    author = "Stahlberg, Felix  and
+      Kumar, Shankar",
+    booktitle = "Proceedings of the 19th Workshop on Innovative Use of NLP for Building Educational Applications (BEA 2024)",
+    month = jun,
+    year = "2024",
+    address = "Mexico City, Mexico",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2024.bea-1.2",
+    pages = "11--16",
 }
 ```
 

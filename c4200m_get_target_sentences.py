@@ -8,21 +8,24 @@ import tensorflow_datasets as tfds
 
 LOGGING_STEPS = 100000
 
-
 def main(argv):
-  if len(argv) != 3:
+  if len(argv) != 3 and len(argv) != 4:
     raise app.UsageError(
-        "python3 c4200m_get_target_sentences.py <edits-tsv> <output-tsv>")
+        "python3 c4200m_get_target_sentences.py <edits-tsv> <output-tsv> [<lang>]")
   edits_tsv_path = argv[1]
   output_tsv_path = argv[2]
+
+  tfds_name = "c4/en:2.2.1"
+  if len(argv) == 4 and argv[3] != "en":
+    tfds_name = "c4/multilingual/" + argv[3]
 
   print("Loading C4_200M target sentence hashes from %r..." % edits_tsv_path)
   remaining_hashes = set()
   with open(edits_tsv_path) as edits_tsv_reader:
     for tsv_line in edits_tsv_reader:
       remaining_hashes.add(tsv_line.split("\t", 1)[0])
-  print("Searching for %d target sentences in the C4 dataset..." %
-        len(remaining_hashes))
+  print("Searching for %d target sentences in the dataset %r..." %
+        (len(remaining_hashes), tfds_name))
   target_sentences = []
   for num_done_examples, example in enumerate(
       tfds.load("c4/en:2.2.1", split="train")):
